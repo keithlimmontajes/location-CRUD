@@ -4,7 +4,7 @@ import { PlusSquareOutlined } from "@ant-design/icons";
 import { useForm } from "react-hook-form";
 
 const CreateEditModal = (props) => {
-  const { list, setList } = props;
+  const { list, items } = props;
   const [sModalVisible, setisModalVisible] = React.useState(false);
   const { register, handleSubmit } = useForm({
     defaultValues: { id: null, location: null, description: null },
@@ -15,9 +15,11 @@ const CreateEditModal = (props) => {
   };
 
   const onSubmit = (data) => {
-    const push = [...list, data];
+    const push = [...items, data];
 
-    setList({ ...list, data: push });
+    props.setSample(true);
+    props.setItems(push);
+    setisModalVisible(false);
   };
 
   const IDindex = list ? list.length - 1 : null;
@@ -74,7 +76,7 @@ const CreateEditModal = (props) => {
             onClick={() => setisModalVisible(false)}
             style={{ width: "100%" }}
           >
-            cancel
+            Cancel
           </button>
         </form>
       </Modal>

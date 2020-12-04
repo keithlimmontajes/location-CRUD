@@ -3,77 +3,28 @@ import { Table, Button } from "antd";
 import { connect } from "react-redux";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import CreateEditModal from "./components/create_edit_modal";
+import CreateEditModal from "./components/create_modal";
+import EditModal from "./components/edit_modal";
 import "./css/style.css";
-import axios from "axios";
 
-// const Landing = (props) => {
-//   const [list, setList] = React.useState({
-//     data: props.list,
-//   });
+const Landing = (props) => {
+  const [list, setFunctionList] = React.useState({
+    data: [],
+  });
+  const [sample, setSample] = React.useState(false);
+  const [items, setItems] = React.useState([]);
 
-//   React.useEffect(() => {
-//     setList({ data: props.list });
-//   }, [props.list]);
+  React.useEffect(() => {
+    setStateList();
+  }, [props.list]);
 
-//   const columns = [
-//     {
-//       title: "ID",
-//       dataIndex: "id",
-//       key: "id",
-//     },
-//     {
-//       title: "Location",
-//       dataIndex: "location",
-//       key: "Location",
-//     },
-//     {
-//       title: "Description",
-//       dataIndex: "description",
-//       key: "Description",
-//     },
-//     {
-//       title: "",
-//       key: "actions",
-//       width: 150,
-//       render: (x, y, z) => {
-//         return (
-//           <div>
-//             <Button
-//               icon={<EditOutlined />}
-//               type="success"
-//               className="buttons-table"
-//             ></Button>
-//             <Button
-//               icon={<DeleteOutlined />}
-//               type="danger"
-//               className="buttons-table"
-//               onClick={() => {
-//                 const data = list.data;
-//                 const findIndex = data.indexOf(x);
-
-//                 data.splice(findIndex, 1);
-
-//                 setList({ data: data });
-//               }}
-//             ></Button>
-//           </div>
-//         );
-//       },
-//     },
-//   ];
-
-class Landing extends React.Component {
-  state = {
-    list: [],
+  const setStateList = () => {
+    setFunctionList({ data: props.list });
+    setItems(props.list);
   };
 
-  componentDidMount() {
-    axios
-      .get("https://5f3430949124200016e18826.mockapi.io/api/locations")
-      .then((res) => this.setState({ list: res.data }));
-  }
-  columns = [
+  console.log(items);
+  const columns = [
     {
       title: "ID",
       dataIndex: "id",
@@ -96,43 +47,52 @@ class Landing extends React.Component {
       render: (x, y, z) => {
         return (
           <div>
-            <Button
-              icon={<EditOutlined />}
-              type="success"
-              className="buttons-table"
-            ></Button>
+            <EditModal
+              item={x}
+              id={x.id}
+              setSample={setSample}
+              setItems={setItems}
+              items={items}
+            />
             <Button
               icon={<DeleteOutlined />}
               type="danger"
               className="buttons-table"
               onClick={() => {
-                const data = this.state.list;
+                const data = [...items];
+
                 const findIndex = data.indexOf(x);
                 data.splice(findIndex, 1);
 
-                this.setState({ list: data });
+                setItems(data);
               }}
-            ></Button>
+            />
           </div>
         );
       },
     },
   ];
 
-  setList = () => {};
+  console.log("remove", items);
+  return (
+    <div style={{ padding: 50 }}>
+      <CreateEditModal
+        list={list.data}
+        setFunctionList={setFunctionList}
+        setSample={setSample}
+        setItems={setItems}
+        items={items}
+      />
+      <Table columns={columns} dataSource={items} />
+    </div>
+  );
+};
 
-  render() {
-    console.log(this.state.list);
-
-    return (
-      <div style={{ padding: 50 }}>
-        <CreateEditModal list={this.state.list} setList={this.setList} />
-        <Table columns={this.columns} dataSource={this.state.list} />
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = ({ locations }) => locations;
+const mapStateToProps = (state) => {
+  console.log(state);
+  return {
+    list: state.locations.list,
+  };
+};
 
 export default connect(mapStateToProps, null)(Landing);
