@@ -1,0 +1,11 @@
+.buttons-table {
+  margin-right: 2px;
+  margin-left: 2px;
+  border-radius: 5px !important;
+}
+.button-add {
+  float: right;
+  margin-bottom: 10px;
+  width: 7%;
+  border-radius: 5px !important;
+}
